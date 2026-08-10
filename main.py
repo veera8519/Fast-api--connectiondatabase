@@ -39,7 +39,12 @@ def create_product(
     return new_product
 
 
-@app.get('/products')
+@app.get('/product')
 def all_products(db:Session=Depends(get_db)):
     products=db.query(models.Product).all()
     return products
+
+@app.get('/product/{id}')
+def product_id(id:int,db:Session=Depends(get_db)):
+    product=db.query(models.Product).filter(models.Product.id==id).first()
+    return product
