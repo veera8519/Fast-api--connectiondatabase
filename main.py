@@ -48,3 +48,33 @@ def all_products(db:Session=Depends(get_db)):
 def product_id(id:int,db:Session=Depends(get_db)):
     product=db.query(models.Product).filter(models.Product.id==id).first()
     return product
+
+@app.delete('/product/{id}')
+def product_del(id:int,db:Session=Depends(get_db)):
+    product=db.query(models.Product).filter(models.Product.id==id).delete(synchronize_session=False)
+    db.commit()
+    return product
+
+@app.put("/product/{id}")
+def update_product(
+    id: int,
+    request: schema.Product,
+    db: Session = Depends(get_db)
+):
+    product_query = (
+        db.query(models.Product)
+        .filter(models.Product.id == id)
+        .first()
+    )
+
+    if product_query is None:
+        return {"message": "Product not found"}
+
+    product_query.name = request.name
+    product_query.description = request.description
+    product_query.price = request.price
+
+    db.commit()
+    db.refresh(product_query)
+
+    return product_query
