@@ -1,3 +1,5 @@
+from warnings import deprecated
+
 from fastapi import Depends, FastAPI,HTTPException,status
 from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
@@ -6,12 +8,19 @@ from database import engine, SessionLocal
 from product import models, schema
 
 
+from passlib.context import CryptContext
+
 models.Base.metadata.create_all(bind=engine)
 
 
 
 app = FastAPI()
 
+
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
+)
 
 def get_db():
     db = SessionLocal()
@@ -84,7 +93,8 @@ def update_product(
 #Route from Seels 
 @app.post('/sellers')
 def create_post_seller(request:schema.Sellers,db:Session=Depends(get_db)):
-    new_seller=models.Seller(username=request.username,email=request.email,password=request.password)
+    hashedpassword=pwd_context.hash(request.password)
+    new_seller=models.Seller(username=request.username,email=request.email,password=hashedpassword)
     db.add(new_seller)
     db.commit()
     db.refresh(new_seller)
