@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI,HTTPException,status
 from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 
@@ -47,6 +47,8 @@ def all_products(db:Session=Depends(get_db)):
 @app.get('/product/{id}',response_model=schema.ShowProduct)
 def product_id(id:int,db:Session=Depends(get_db)):
     product=db.query(models.Product).filter(models.Product.id==id).first()
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='NOT FOUND')
     return product
 
 @app.delete('/product/{id}')
@@ -78,3 +80,12 @@ def update_product(
     db.refresh(product_query)
 
     return product_query
+
+#Route from Seels 
+@app.post('/sellers')
+def create_post_seller(request:schema.Sellers,db:Session=Depends(get_db)):
+    new_seller=models.Seller(username=request.username,email=request.email,password=request.password)
+    db.add(new_seller)
+    db.commit()
+    db.refresh(new_seller)
+    return new_seller

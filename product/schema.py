@@ -9,3 +9,8 @@ class ShowProduct(BaseModel):
     model_config=ConfigDict(from_attributes=True)
     name:str
     price:int
+
+class Sellers(BaseModel):
+    username:str
+    email:str
+    password:str
