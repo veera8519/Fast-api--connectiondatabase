@@ -65,7 +65,7 @@ def product_del(id:int,db:Session=Depends(get_db)):
     product=db.query(models.Product).filter(models.Product.id==id).delete(synchronize_session=False)
     db.commit()
     return product
-
+                                                                                                                       
 @app.put("/product/{id}")
 def update_product(
     id: int,
@@ -91,7 +91,7 @@ def update_product(
     return product_query
 
 #Route from Seels 
-@app.post('/sellers')
+@app.post('/sellers',response_model=schema.DisplaySeller)
 def create_post_seller(request:schema.Sellers,db:Session=Depends(get_db)):
     hashedpassword=pwd_context.hash(request.password)
     new_seller=models.Seller(username=request.username,email=request.email,password=hashedpassword)
@@ -99,3 +99,5 @@ def create_post_seller(request:schema.Sellers,db:Session=Depends(get_db)):
     db.commit()
     db.refresh(new_seller)
     return new_seller
+
+

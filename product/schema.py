@@ -1,3 +1,5 @@
+from re import S
+
 from pydantic  import BaseModel,ConfigDict
 
 class Product(BaseModel):
@@ -14,3 +16,9 @@ class Sellers(BaseModel):
     username:str
     email:str
     password:str
+
+class DisplaySeller(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    username: str
+    email: str
