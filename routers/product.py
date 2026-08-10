@@ -87,7 +87,7 @@ def product_del(
     }
 
 
-# UPDATE PRODUCT
+
 @router.put("/{id}")
 def update_product(
     id: int,
