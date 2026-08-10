@@ -44,7 +44,7 @@ def all_products(db:Session=Depends(get_db)):
     products=db.query(models.Product).all()
     return products
 
-@app.get('/product/{id}')
+@app.get('/product/{id}',response_model=schema.ShowProduct)
 def product_id(id:int,db:Session=Depends(get_db)):
     product=db.query(models.Product).filter(models.Product.id==id).first()
     return product
