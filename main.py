@@ -38,7 +38,8 @@ def create_product(
     new_product = models.Product(
         name=request.name,
         description=request.description,
-        price=request.price
+        price=request.price,
+        seller_id=1
     )
 
     db.add(new_product)
