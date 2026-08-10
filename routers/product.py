@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from product import models, schema
-
+from routers.login import get_current_user
 
 router = APIRouter(
     prefix="/product",
@@ -15,7 +15,7 @@ router = APIRouter(
 @router.post("/")
 def create_product(
     request: schema.Product,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),current_user: str = Depends(get_current_user)
 ):
     new_product = models.Product(
         name=request.name,

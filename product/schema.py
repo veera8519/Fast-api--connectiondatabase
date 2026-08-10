@@ -1,4 +1,5 @@
 from re import S
+from typing import Optional
 
 from pydantic  import BaseModel,ConfigDict
 
@@ -24,5 +25,12 @@ class DisplaySeller(BaseModel):
     email: str
 
 class login(BaseModel):
-    username:str
+    user:str
     password:str
+
+class Token(BaseModel):
+    access_token:str
+    token_type:str
+
+class TokenData(BaseModel):
+    username:Optional[str]=None
