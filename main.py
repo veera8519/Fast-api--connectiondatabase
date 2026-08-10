@@ -37,3 +37,9 @@ def create_product(
     db.refresh(new_product)
 
     return new_product
+
+
+@app.get('/products')
+def all_products(db:Session=Depends(get_db)):
+    products=db.query(models.Product).all()
+    return products
