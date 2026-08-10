@@ -1,13 +1,39 @@
-from fastapi import FastAPI
-from product import schema
+from fastapi import Depends, FastAPI
+from sqlalchemy import inspect, text
+from sqlalchemy.orm import Session
 
-from database import engine
-from product import models
+from database import engine, SessionLocal
+from product import models, schema
 
-models.Base.metadata.create_all(engine)
 
-app=FastAPI()
+models.Base.metadata.create_all(bind=engine)
+
+
+
+app = FastAPI()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 @app.post("/product")
-def create_product(request:schema.Product):
-    return request
+def create_product(
+    request: schema.Product,
+    db: Session = Depends(get_db)
+):
+    new_product = models.Product(
+        name=request.name,
+        description=request.description,
+        price=request.price
+    )
+
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+
+    return new_product
