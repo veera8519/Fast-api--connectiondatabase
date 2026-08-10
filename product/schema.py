@@ -22,3 +22,7 @@ class DisplaySeller(BaseModel):
 
     username: str
     email: str
+
+class login(BaseModel):
+    username:str
+    password:str
